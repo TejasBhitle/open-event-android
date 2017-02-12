@@ -35,6 +35,7 @@ import org.fossasia.openevent.data.Session;
 import org.fossasia.openevent.data.Track;
 import org.fossasia.openevent.dbutils.DbSingleton;
 import org.fossasia.openevent.receivers.NotificationAlarmReceiver;
+import org.fossasia.openevent.utils.BookmarksListChangeListener;
 import org.fossasia.openevent.utils.ConstantStrings;
 import org.fossasia.openevent.utils.ISO8601Date;
 import org.fossasia.openevent.widget.BookmarkWidgetProvider;
@@ -59,6 +60,11 @@ public class SessionsListAdapter extends BaseRVAdapter<Session, SessionsListAdap
     public static int listPosition;
     private ColorGenerator colorGenerator = ColorGenerator.MATERIAL;
     private TextDrawable.IBuilder drawableBuilder = TextDrawable.builder().round();
+    private BookmarksListChangeListener bookmarksListChangeListener;
+
+    public void setBookmarksListChangeListener(BookmarksListChangeListener bookmarksListChangeListener){
+        this.bookmarksListChangeListener = bookmarksListChangeListener;
+    }
 
     @SuppressWarnings("all")
     Filter filter = new Filter() {
@@ -150,6 +156,7 @@ public class SessionsListAdapter extends BaseRVAdapter<Session, SessionsListAdap
                                         public void onClick(DialogInterface dialog, int which) {
                                             dbSingleton.deleteBookmarks(session.getId());
                                             holder.sessionBookmarkIcon.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+                                            if(bookmarksListChangeListener != null) bookmarksListChangeListener.onChange();
                                             Toast.makeText(context, R.string.removed_bookmark, Toast.LENGTH_SHORT).show();
                                         }
                                     })
