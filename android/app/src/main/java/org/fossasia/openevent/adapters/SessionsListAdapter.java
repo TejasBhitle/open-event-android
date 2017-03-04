@@ -60,8 +60,8 @@ public class SessionsListAdapter extends BaseRVAdapter<Session, SessionsListAdap
     private TextDrawable.IBuilder drawableBuilder = TextDrawable.builder().round();
     private BookmarksListChangeListener bookmarksListChangeListener;
 
-    public void setBookmarksListChangeListener(BookmarksListChangeListener bookmarksListChangeListener){
-        this.bookmarksListChangeListener = bookmarksListChangeListener;
+    public void setBookmarksListChangeListener(BookmarksListChangeListener listener){
+        this.bookmarksListChangeListener = listener;
     }
 
     private int color;
@@ -154,7 +154,9 @@ public class SessionsListAdapter extends BaseRVAdapter<Session, SessionsListAdap
                 if (dbSingleton.isBookmarked(session.getId())) {
                     dbSingleton.deleteBookmarks(session.getId());
                     holder.sessionBookmarkIcon.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
-                    if(bookmarksListChangeListener != null) bookmarksListChangeListener.onChange();
+                    if(bookmarksListChangeListener != null){
+                        bookmarksListChangeListener.onChange();
+                    }
                     Snackbar.make(v, R.string.removed_bookmark, Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo, new View.OnClickListener() {
                                 @Override
@@ -162,7 +164,9 @@ public class SessionsListAdapter extends BaseRVAdapter<Session, SessionsListAdap
                                     dbSingleton.addBookmarks(session.getId());
                                     holder.sessionBookmarkIcon.setImageResource(R.drawable.ic_bookmark_white_24dp);
                                     WidgetUpdater.updateWidget(context);
-                                    if(bookmarksListChangeListener != null) bookmarksListChangeListener.onChange();
+                                    if(bookmarksListChangeListener != null){
+                                        bookmarksListChangeListener.onChange();
+                                    }
                                 }
                             }).show();
                 } else {
